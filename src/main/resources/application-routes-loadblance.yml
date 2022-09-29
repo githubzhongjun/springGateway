@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: springGateway
+  cloud:
+    gateway:
+      routes:
+        - id: lb_router
+          predicates: #断言
+            - Path=/gateway/**  #根据路径访问
+          filters:
+            - StripPrefix=1 #这个意思是将浏览器请求的路径第一个/斜杠后的路径参数去掉，在这里就是去除/gateway，也就是跳过前缀的意思
+          uri:
+            lb://springDubboConsumer #负载策略，协议使用lb表示开启负载，后面跟着的是服务名称
+      discovery: #开启负载均衡
+        locator:
+          enabled: true
+          lower-case-service-id: true #服务id小写
+    nacos:
+      discovery:
+        server-addr: 192.168.10.100:8848
+server:
+  port: 8080

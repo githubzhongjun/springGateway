@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: springGateway
+  cloud:
+    gateway:
+      routes:
+        - predicates: #断言
+            - Path=/gateway/**  #根据路径访问
+          filters:
+            - StripPrefix=1 #这个意思是将浏览器请求的路径第一个/斜杠后的路径参数去掉，在这里就是去除/gateway，也就是跳过前缀的意思
+            - AddRequestHeader = X-Request-red, blue #给请求头添加信息
+            - Hystrix = myCommanName #gateway整合Hystrix，引入Hystrix依赖
+            - RewritePath = /gateway(?<segment>/?.*),$\{segment} #将请求路径通过正则表达式进行重写
+#            还有很多默认提供的过滤器实现，比如限流、重试等，在官网都能找到，如果想要自定义过滤器实现，只需要继承AbstractGatewayFilterFactory抽象工厂
+#            filter其实就是实现了gateway调用链路过程中，对客户端请求 和 服务端响应 之前做过滤的设计
+          uri:
+            http://localhost:8081/
+server:
+  port: 8080

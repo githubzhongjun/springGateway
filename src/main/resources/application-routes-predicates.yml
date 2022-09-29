@@ -1,0 +1,21 @@
+# 多路由的配置 需要加ID
+spring:
+  application:
+    name: springGateway
+  cloud:
+    gateway:
+      routes:
+        - id: path_route
+          predicates: #断言
+            - Path=/gateway/**  #根据路径访问
+          filters:
+            - StripPrefix=1 #这个意思是将浏览器请求的路径第一个/斜杠后的路径参数去掉，在这里就是去除/gateway，也就是跳过前缀的意思
+          uri:
+            http://localhost:8081/
+        - id: cookie_route
+          predicates: #断言
+            - Cookie=name,zhongjun  #根据cookie访问
+          uri:
+            https://www.baidu.com/
+server:
+  port: 8080

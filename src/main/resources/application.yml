@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: springGateway
+  cloud:
+    gateway:
+      routes:
+        - predicates: #断言
+            - Path=/gateway/**  #根据路径访问
+#            - After=2022-09-19T15:00:50.789-18:00[America/Denver]   在这个时间之后可以访问
+#            - Before=2022-09-19T15:00:50.789-18:00[America/Denver]  在这个时间之后可以访问
+#            - Between=2022-09-19T15:00:50.789-18:00[America/Denver],2022-09-20T15:00:50.789-18:00[America/Denver]  在这个时间范围可以范围
+#            - Cookie=chocolate, ch.p  根据Cookie断言 =等于号后面有两个值，第一个是key,第二个是value
+#           gateway还提供了很多的断言，如果不满足也可以自己定义  所有的断言实现都是继承了AbstracRoutePredicateFactory抽象工厂
+          filters:
+            - StripPrefix=1 #这个意思是将浏览器请求的路径第一个/斜杠后的路径参数去掉，在这里就是去除/gateway，也就是跳过前缀的意思
+          uri:
+            http://localhost:8081/
+server:
+  port: 8080
+
+#浏览器请求http://localhost:8080/gateway/xxx
+#进过Gateway服务解析变为http://localhost:8081/ 拼接 /xxx
+#最后请求变为http://localhost:8081/xxx
